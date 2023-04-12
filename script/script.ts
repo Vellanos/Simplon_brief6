@@ -4,8 +4,12 @@ const navLinksContainer = document.querySelector(".navlinks-container");
 
 //Variable pour carousel
 const sliders:Element | null = document.querySelector(".carousel")
-let scrollPerClick
+const arrowL:Element | null = document.querySelector("#arrow-left")
+const arrowR:Element | null = document.querySelector("#arrow-right")
+
+let scrollPerClick:number = 200
 let ImagePadding:number = 20
+let scrollAmount:number = 0
 
 //Gestion du menu burguer
 const toggleNav = e => {
@@ -36,6 +40,38 @@ new ResizeObserver(entries => {
 
 showMovieData()
 
+if (arrowL) {
+    arrowL.addEventListener('click', () => sliderScrollLeft())
+}
+
+if (arrowR) {
+    arrowR.addEventListener('click', () => sliderScrollRight())
+}
+
+
+function sliderScrollLeft(){
+    sliders?.scrollTo({
+        top:0,
+        left: (scrollAmount -= scrollPerClick),
+        behavior: "smooth",
+    })
+
+    if (scrollAmount < 0){
+        scrollAmount = 0
+    }
+}
+
+function sliderScrollRight() {
+    if(scrollAmount <= sliders?.scrollWidth - sliders?.clientWidth){
+        sliders?.scrollTo({
+            top: 0,
+            left: (scrollAmount += scrollPerClick),
+            behavior: "smooth",
+        })
+    }
+}
+
+
 async function showMovieData() {
     const api_key:string = "4202002edba3d2376674132c19d1dc98"
     try {
@@ -44,13 +80,17 @@ async function showMovieData() {
         const data = await response.json()
         const result = data.results
 
+        console.log(result);
+        
+        
+
         result.map(function (cur,index){
             sliders?.insertAdjacentHTML(
                 "beforeend",
                 `<img class="img-${index} slider-img" src="https://image.tmdb.org/t/p/w154/${cur.poster_path}" />`
             )
         })
-        scrollPerClick = document.querySelector(".img-1")?.clientWidth + ImagePadding
+        //scrollPerClick = document.querySelector(".img-1")?.clientWidth + ImagePadding
 
     } catch (error) {
         console.log(error)
