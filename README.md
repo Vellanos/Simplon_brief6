@@ -22,3 +22,12 @@ Si Parcel n'est pas installé sur votre machine, puis vérifier avec la commande
 sudo npm install -g parcel-bundler
 
 ```
+
+## API KEY
+Pour rentrer votre clé api, utiliser la commande suivante dans votre terminal.
+
+```
+cp api_key.exemple.ts api_key.ts
+
+```
+Penser ensuite à ajouter votre clé dans le fichier api_key.ts

@@ -1,3 +1,5 @@
+import api_key from "./api_key"
+
 //Variable pour menu burguer
 const toggler = document.querySelector(".hamburger");
 const navLinksContainer = document.querySelector(".navlinks-container");
@@ -6,6 +8,9 @@ const navLinksContainer = document.querySelector(".navlinks-container");
 const sliders:Element | null = document.querySelector(".carousel")
 const arrowL:Element | null = document.querySelector("#arrow-left")
 const arrowR:Element | null = document.querySelector("#arrow-right")
+const most_popular:Element | null = document.querySelector("#most-popular")
+const kid:Element | null = document.querySelector("#kid")
+const most_like:Element | null = document.querySelector("#most-like")
 
 let scrollPerClick:number = 200
 let ImagePadding:number = 20
@@ -27,16 +32,17 @@ const toggleNav = e => {
 toggler?.addEventListener("click", toggleNav);
 
 new ResizeObserver(entries => {
-    if (entries[0].contentRect.width <= 900) {
+    if (entries[0].contentRect.width <= 900 && navLinksContainer) {
         navLinksContainer.style.transition = "transform 0.4s ease-out";
-    } else {
+    } else if (navLinksContainer) {
         navLinksContainer.style.transition = "none";
     }
 }).observe(document.body)
 
-
-
 //Gestion du carousel
+
+const link_site:string = "https://api.themoviedb.org/3" //Lien fixe de l'api du site
+let research:string = "/discover/movie?sort_by=popularity.desc" // partie pour définir notre recherche
 
 showMovieData()
 
@@ -48,7 +54,20 @@ if (arrowR) {
     arrowR.addEventListener('click', () => sliderScrollRight())
 }
 
+if (most_popular) {
+    most_popular.addEventListener('click', () => switchResearch(1))
+}
 
+if (kid) {
+    kid.addEventListener('click', () => switchResearch(2))
+}
+
+if (most_like) {
+    most_like.addEventListener('click', () => switchResearch(3))
+}
+
+//Fonction pour gérer le slide du caroussel
+//Fonction pour aller sur la gauche
 function sliderScrollLeft(){
     sliders?.scrollTo({
         top:0,
@@ -61,6 +80,7 @@ function sliderScrollLeft(){
     }
 }
 
+//Fonction pour aller sur la droite
 function sliderScrollRight() {
     if(scrollAmount <= sliders?.scrollWidth - sliders?.clientWidth){
         sliders?.scrollTo({
@@ -71,18 +91,15 @@ function sliderScrollRight() {
     }
 }
 
-
+//Fonction pour call les films dans le caroussel
 async function showMovieData() {
-    const api_key:string = "4202002edba3d2376674132c19d1dc98"
+    // Supprimer tout le contenu des sliders
+    sliders?.innerHTML = ""
     try {
         // Fetch API pour récupérer les données
-        const response = await fetch("https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=" + api_key)
+        const response = await fetch(link_site + research + api_key)
         const data = await response.json()
         const result = data.results
-
-        console.log(result);
-        
-        
 
         result.map(function (cur,index){
             sliders?.insertAdjacentHTML(
@@ -90,9 +107,23 @@ async function showMovieData() {
                 `<img class="img-${index} slider-img" src="https://image.tmdb.org/t/p/w154/${cur.poster_path}" />`
             )
         })
-        //scrollPerClick = document.querySelector(".img-1")?.clientWidth + ImagePadding
 
     } catch (error) {
         console.log(error)
     }
+}
+
+//Fonction pour changer le call api (const research)
+
+function switchResearch(arg1:number){
+    research = ""
+    if (arg1 === 1) { // les plus populaire
+        research = "/discover/movie?sort_by=popularity.desc"
+    } else if (arg1 === 2) { // Pour les enfants
+        research = "/discover/movie?certification_country=US&certification.lte=G&sort_by=popularity.desc"
+    } else if (arg1 === 3) { // les plus likes
+        research = "/discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc"
+    }
+
+    showMovieData()
 }
