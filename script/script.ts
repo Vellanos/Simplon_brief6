@@ -78,6 +78,7 @@ function sliderScrollLeft(){
     if (scrollAmount < 0){
         scrollAmount = 0
     }
+    
 }
 
 //Fonction pour aller sur la droite
@@ -89,11 +90,12 @@ function sliderScrollRight() {
             behavior: "smooth",
         })
     }
+    
 }
 
 //Fonction pour call les films dans le caroussel
 async function showMovieData() {
-    // Supprimer tout le contenu des sliders
+    // Supprimer tout le contenu des sliders 
     sliders?.innerHTML = ""
     try {
         // Fetch API pour récupérer les données
@@ -114,7 +116,6 @@ async function showMovieData() {
 }
 
 //Fonction pour changer le call api (const research)
-
 function switchResearch(arg1:number){
     research = ""
     if (arg1 === 1) { // les plus populaire
@@ -126,4 +127,6 @@ function switchResearch(arg1:number){
     }
 
     showMovieData()
+    let scrollAmount:number = 0
+
 }

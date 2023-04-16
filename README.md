@@ -24,7 +24,7 @@ sudo npm install -g parcel-bundler
 ```
 
 ## API KEY
-Pour rentrer votre clé api, utiliser la commande suivante dans votre terminal.
+Pour rentrer votre clé api, utiliser la commande suivante dans votre terminal à la racine du projet.
 
 ```
 cd script
