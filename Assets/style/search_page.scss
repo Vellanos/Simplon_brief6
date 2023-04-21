@@ -33,7 +33,7 @@
         margin-top: 11%;
     }
     
-    button {
+    .btn {
         padding: 3px 6px;
         color: black;
         font-weight: bold;
@@ -43,15 +43,20 @@
         cursor: pointer;
     }
 
-    button:nth-child(1) {
+    .btn:nth-child(1) {
         background-color: grey;
     }
 
-    button:nth-child(2) {
+    .btn:nth-child(2) {
         background-color: #fff;
     }
+    
+    .btn:last-child{
+        background-color: black;
+        color: white;
+    }
 
-    button:hover {
+    .btn:hover {
         background-color: red;
     }
 }

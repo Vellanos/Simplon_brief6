@@ -34,6 +34,7 @@ const image_contener = document.querySelector(".image-contener")
 const header = document.querySelector("#header")
 const back = document.querySelector("#bouton-back")
 const next = document.querySelector("#bouton-next")
+const home = document.querySelector("#bouton-home")
 const pagination = document.querySelector("#nombre-de-page")
 const res_search = document.querySelector("#res-search")
 
@@ -136,11 +137,11 @@ async function showMovieData() {
 
             sliders?.insertAdjacentHTML(
                 "beforeend",
-                `<img class="img-${index} slider-img" src="https://image.tmdb.org/t/p/w154/${cur.poster_path}" />`
+                `<img class="img-${index} slider-img" src="${img_base_url}${cur.poster_path}" />`
             )
 
             titres.push(cur.original_title)
-            images.push(cur.poster_path)
+            images.push(img_base_url+cur.poster_path)
             overviews.push(cur.overview)
             vote_averages.push(cur.vote_average)
         })
@@ -324,4 +325,8 @@ async function pageNext() {
 //Attribution de la fonction au boutton next
 next?.addEventListener('click', () => {
     pageNext()
+});
+
+home?.addEventListener('click', () => {
+    location.reload();
 });
