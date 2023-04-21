@@ -65,7 +65,7 @@ new ResizeObserver(entries => {
 }).observe(document.body)
 
 //Gestion du carousel
-
+//Appel la fonction pour afficher le premier caroussel
 showMovieData()
 
 if (arrowL) {
@@ -117,6 +117,7 @@ function sliderScrollRight() {
 
 //Fonction pour call les films dans le caroussel
 async function showMovieData() {
+    //Initialisation des variables
     scrollAmount = 0
     images = []
     overviews = []
@@ -134,17 +135,18 @@ async function showMovieData() {
         const result = data.results
         console.log(result)
         result.map(function (cur, index) {
-
+            //Ajouter les images au caroussel
             sliders?.insertAdjacentHTML(
                 "beforeend",
                 `<img class="img-${index} slider-img" src="${img_base_url}${cur.poster_path}" />`
             )
-
+            //Remplir les différentes listes des éléments à afficher dans les popups d'infos
             titres.push(cur.original_title)
             images.push(img_base_url+cur.poster_path)
             overviews.push(cur.overview)
             vote_averages.push(cur.vote_average)
         })
+        //Ajouter l'event pour pouvoir faire apparaitre les popup d'infos
         img_info = document.getElementsByClassName("slider-img")
         for (let i = 0; i < img_info.length; i++) {
             img_info[i].addEventListener('click', () => displayInfo(images[i], overviews[i], vote_averages[i], titres[i]))
@@ -155,7 +157,7 @@ async function showMovieData() {
 
 }
 
-//Fonction pour changer le call api (var research)
+//Fonction pour changer le call api (var research) avec les onglets dans la barre de nav
 function switchResearch(idResearch: number) {
     research = ""
     if (idResearch === 1) { // les plus populaire
@@ -165,9 +167,7 @@ function switchResearch(idResearch: number) {
     } else if (idResearch === 3) { // les plus likes
         research = "/discover/movie/?certification_country=US&certification=R&sort_by=vote_average.desc"
     }
-
     showMovieData()
-
 }
 
 //Fonction pour créer la popup d'infos des films
@@ -176,9 +176,11 @@ function displayInfo(image, overview, vote, titre) {
     const popups = document.querySelectorAll(".popup");
     popups.forEach((popup) => popup.remove());
 
+    //Création de la popup
     const popup = document.createElement("div");
     popup.classList.add("popup"); // Ajoute la classe "popup"
 
+    //Ajout des éléments dans la pop
     popup.innerHTML = `
       <h2>${titre}</h2>
       <img src="${image}"/>
@@ -196,28 +198,36 @@ function displayInfo(image, overview, vote, titre) {
         popup.remove();
     });
 
+    // Ajoute un gestionnaire d'événements "click" pour le bouton "PLAY"
     const playButton = popup.querySelector("#play-button");
-    const links = [
+    const links = [ // Liste de meme appeler de manière aléatoire avec le bouton play
         "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         "https://youtube.com/shorts/IEdz05-Glw4?feature=share",
         "https://www.youtube.com/watch?v=yw35BYhKVoo",
         "https://www.youtube.com/watch?v=5V2D1aXX_UM",
         "https://www.youtube.com/watch?v=DhwDsmns_DE",
-        "https://www.youtube.com/watch?v=W-C3F2J2fls"
+        "https://www.youtube.com/watch?v=W-C3F2J2fls",
+        "https://www.youtube.com/shorts/0i3QIBW62E4",
+        "https://www.youtube.com/watch?v=YlXBpLjSSMc",
+        "https://www.youtube.com/watch?v=wdbfZExK7R0",
+        "https://www.youtube.com/shorts/hQAxuJfseyY",
+        "https://www.youtube.com/watch?v=Cw_fwHTB26U",
+        "https://www.youtube.com/watch?v=7gVsq3IZOR4",
+        "https://www.youtube.com/watch?v=oVO3M8X9ukM",
+        "https://www.youtube.com/shorts/Yulhtn10b5s",
+        "https://www.youtube.com/shorts/olJH-uOE3Ek",
+        "https://www.youtube.com/watch?v=SbsJK9BwwYs"
     ];
-
     playButton?.addEventListener("click", () => {
         const randomLink = links[Math.floor(Math.random() * links.length)];
         window.open(randomLink);
     });
-
 
     document.body.appendChild(popup);
 
 }
 
 // Gestion de la recherche
-
 //Attribution de la fonction au boutton rechercher par click
 searchButton?.addEventListener('click', () => {
     doSearche()
@@ -232,15 +242,16 @@ searchInput?.addEventListener('keydown', (event) => {
 
 //Fonction pour lancer la requête/recherche de l'utilisateur
 function doSearche() {
-    let searchQuery: string = searchInput?.value
-    accueil?.classList.add("hide")
-    accueil?.classList.remove("accueil")
-    header?.classList.add("hide")
-    search?.classList.add("search")
-    search?.classList.remove("hide")
-    research = "/search/movie?language=en-US&query=" + searchQuery + "&include_adult=false&page="
-    apiResearch(searchQuery, research, page)
-
+    let searchQuery: string = searchInput?.value //Récupère la Query entré par l'utilisateur
+    if(searchQuery !== "") { //La condition pour ne pas pouvoir faire de recherche si l'input est vide
+        accueil?.classList.add("hide")
+        accueil?.classList.remove("accueil")
+        header?.classList.add("hide")
+        search?.classList.add("search")
+        search?.classList.remove("hide")
+        research = "/search/movie?language=en-US&query=" + searchQuery + "&include_adult=false&page="
+        apiResearch(searchQuery, research, page)
+    }
 }
 
 //Fonction pour la gGestion de l'api pour la recherche de l'utilisateur
