@@ -6,10 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="Assets/style/style.scss">
+    <link rel="stylesheet" href="Assets/style/search_bar.scss">
     <link rel="stylesheet" href="Assets/style/style_nav_bar.css">
     <link rel="stylesheet" href="Assets/style/popup.css">
     <link rel="stylesheet" href="Assets/style/home_page.scss">
-
+    <link rel="stylesheet" href="Assets/style/search_page.scss">
     <title>Simpflix</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20,8 +21,7 @@
 </head>
 
 <body>
-
-    <header>
+    <header id="header">
         <nav>
 
             <a href="#" class="nav-icon" aria-label="homepage" aria-current="page">
@@ -44,23 +44,36 @@
 
         </nav>
     </header>
+    <section class="accueil">
 
-    <div class="home-main">
-        <p>Welcome on <span>SIMPFLIX</span></p>
-        <div class="search-bar">
-            <input type="text" placeholder="Recherche de film..." />
-            <button type="submit">Rechercher</button>
+
+        <div class="home-main">
+            <p>Welcome on <span>SIMPFLIX</span></p>
+            <div class="search-bar">
+                <input type="text" placeholder="Recherche de film..." id="searchInput" />
+                <button type="submit" id="searchButton">Rechercher</button>
+            </div>
         </div>
-    </div>
-    <div class="carousel-container">
-        <img src="Assets/img/fleche-fine-contour-vers-la-gauche.png" class="switch-left carousel-button" id="arrow-left"></img>
-        <div class="carousel">
+        <div class="carousel-container">
+            <img src="Assets/img/fleche-fine-contour-vers-la-gauche.png" class="switch-left carousel-button"
+                id="arrow-left"></img>
+            <div class="carousel">
 
+            </div>
+            <img src="Assets/img/fleche-droite.png" class="switch-right carousel-button" id="arrow-right"></img>
         </div>
-        <img src="Assets/img/fleche-droite.png" class="switch-right carousel-button" id="arrow-right"></img>
-    </div>
+    </section>
 
+    <section class="hide" id="sec-search">
 
+        <p id="res-search">Résultat(s) pour la recherche :</p>
+        <div class="image-contener"></div>
+        <div class="pagination">
+            <button id="bouton-back">BACK</button>
+            <p id="nombre-de-page"> 1/20</p>
+            <button id="bouton-next">NEXT</button>
+        </div>
+    </section>
 
 
     <script src="./script/script.ts"></script>

@@ -1,4 +1,5 @@
 import api_key from "./api_key"
+import grogu from "../Assets/img/grogu.jpeg"
 
 //Variable pour menu burguer
 const toggler = document.querySelector(".hamburger");
@@ -20,6 +21,24 @@ let vote_averages
 let scrollPerClick: number = 200
 let ImagePadding: number = 20
 let scrollAmount: number = 0
+const link_site: string = "https://api.themoviedb.org/3" //Lien fixe de l'api du site
+const img_base_url = "https://image.tmdb.org/t/p/w154/"
+let research: string = "/discover/movie?sort_by=popularity.desc" // partie pour définir notre recherche
+
+//Variable pour la recherche
+const searchInput = document.querySelector('#searchInput');
+const searchButton = document.querySelector('#searchButton');
+const accueil = document.querySelector(".accueil")
+const search = document.querySelector("#sec-search")
+const image_contener = document.querySelector(".image-contener")
+const header = document.querySelector("#header")
+const back = document.querySelector("#bouton-back")
+const next = document.querySelector("#bouton-next")
+const pagination = document.querySelector("#nombre-de-page")
+const res_search = document.querySelector("#res-search")
+
+let page: number = 1
+let page_max: number = 0
 
 //Gestion du menu burguer
 const toggleNav = e => {
@@ -45,9 +64,6 @@ new ResizeObserver(entries => {
 }).observe(document.body)
 
 //Gestion du carousel
-
-const link_site: string = "https://api.themoviedb.org/3" //Lien fixe de l'api du site
-let research: string = "/discover/movie?sort_by=popularity.desc" // partie pour définir notre recherche
 
 showMovieData()
 
@@ -100,12 +116,13 @@ function sliderScrollRight() {
 
 //Fonction pour call les films dans le caroussel
 async function showMovieData() {
-    let scrollAmount: number = 0
+    scrollAmount = 0
     images = []
     overviews = []
     vote_averages = []
-    img_info = ""
     titres = []
+    img_info = ""
+
 
     // Supprimer tout le contenu des sliders 
     sliders?.innerHTML = ""
@@ -114,12 +131,14 @@ async function showMovieData() {
         const response = await fetch(link_site + research + api_key)
         const data = await response.json()
         const result = data.results
-
+        console.log(result)
         result.map(function (cur, index) {
+
             sliders?.insertAdjacentHTML(
                 "beforeend",
                 `<img class="img-${index} slider-img" src="https://image.tmdb.org/t/p/w154/${cur.poster_path}" />`
             )
+
             titres.push(cur.original_title)
             images.push(cur.poster_path)
             overviews.push(cur.overview)
@@ -150,7 +169,7 @@ function switchResearch(idResearch: number) {
 
 }
 
-
+//Fonction pour créer la popup d'infos des films
 function displayInfo(image, overview, vote, titre) {
     // Ferme toutes les popups précédemment ouvertes
     const popups = document.querySelectorAll(".popup");
@@ -158,9 +177,10 @@ function displayInfo(image, overview, vote, titre) {
 
     const popup = document.createElement("div");
     popup.classList.add("popup"); // Ajoute la classe "popup"
+
     popup.innerHTML = `
       <h2>${titre}</h2>
-      <img src="https://image.tmdb.org/t/p/w154/${image}"/>
+      <img src="${image}"/>
       <p id="note">Note : ${vote}/10</p>
       <p id="overview">${overview}</p>
       <div>
@@ -194,3 +214,114 @@ function displayInfo(image, overview, vote, titre) {
     document.body.appendChild(popup);
 
 }
+
+// Gestion de la recherche
+
+//Attribution de la fonction au boutton rechercher par click
+searchButton?.addEventListener('click', () => {
+    doSearche()
+});
+
+//Attribution de la fonction au boutton rechercher avec la touche ENTER
+searchInput?.addEventListener('keydown', (event) => {
+    if (event.keyCode === 13) {
+        doSearche()
+    }
+});
+
+//Fonction pour lancer la requête/recherche de l'utilisateur
+function doSearche() {
+    let searchQuery: string = searchInput?.value
+    accueil?.classList.add("hide")
+    accueil?.classList.remove("accueil")
+    header?.classList.add("hide")
+    search?.classList.add("search")
+    search?.classList.remove("hide")
+    research = "/search/movie?language=en-US&query=" + searchQuery + "&include_adult=false&page="
+    apiResearch(searchQuery, research, page)
+
+}
+
+//Fonction pour la gGestion de l'api pour la recherche de l'utilisateur
+async function apiResearch(searchQuery, research, page) {
+    try {
+        images = []
+        overviews = []
+        vote_averages = []
+        titres = []
+        image_contener?.innerHTML = ""
+        // Fetch API pour récupérer les données
+        let response = await fetch(link_site + research + page + api_key)
+        let data = await response.json()
+        let result = data.results
+        page_max = data.total_pages
+        console.log(page_max)
+
+
+        result.map(function (cur, index) {
+            titres.push(cur.original_title)
+            images.push(cur.poster_path)
+            overviews.push(cur.overview)
+            vote_averages.push(cur.vote_average.toFixed(1))
+            console.log(overviews[index])
+        })
+
+        for (let i = 0; i < images.length; i++) {
+            let imgElement = document.createElement('img');
+            if (images[i] == null) {
+                imgElement.setAttribute("src", grogu)
+                images[i] = grogu
+            } else {
+                imgElement.setAttribute("src", img_base_url + images[i])
+                images[i] = img_base_url + images[i]
+            }
+            if (overviews[i] == "") {
+                overviews[i] = "Ya R la famax"
+            }
+            image_contener?.appendChild(imgElement)
+            imgElement.addEventListener('click', () => displayInfo(images[i], overviews[i], vote_averages[i], titres[i]))
+        }
+        res_search?.innerHTML = "Résultats pour : " + searchQuery
+        pagination?.innerHTML = page + "/" + page_max
+    }
+
+    catch (error) {
+        console.log(error)
+    }
+}
+
+//Fonction pour pagination back
+async function pageBack() {
+    if(page == 1){
+        page = 1
+    } else {
+        page = page - 1
+        let searchQuery: string = searchInput?.value
+        apiResearch(searchQuery,research,page)
+    }
+
+    
+
+}
+
+//Attribution de la fonction au boutton back
+back?.addEventListener('click', () => {
+    pageBack()
+});
+
+//Fonction pour pagination next
+async function pageNext() {
+    if(page == page_max){
+        page = page_max
+    } else {
+        page = page + 1
+        let searchQuery: string = searchInput?.value
+        apiResearch(searchQuery,research,page)
+    }
+    
+}
+
+//Attribution de la fonction au boutton next
+next?.addEventListener('click', () => {
+    pageNext()
+});

@@ -1,0 +1,42 @@
+/* Barre de recherche */
+.search-bar {
+    width: 100%;
+    max-width: 400px; /* Largeur maximale */
+    margin: 0 auto;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background-color: #f2f2f2;
+    font-size: 16px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style pour les écrans plus petits */
+ @media only screen and (max-width: 420px) {
+    .search-bar {
+        max-width: 100%; /* Barre de recherche prend toute la largeur */
+        margin: 10px; /* Marge autour de la barre de recherche */
+        border-radius: 10px; /* Rayon de bordure plus petit */
+    }
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    padding: 0 10px;
+    font-size: 16px;
+    color: #333;
+}
+  
+.search-bar button {
+    border: none;
+    background-color: #333;
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.search-bar button:hover {
+    background-color: red;
+    color: black;
+}   
